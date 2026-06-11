@@ -1,0 +1,1495 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FF PRO PANEL — NEXUS v2.0</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #020810;
+  --bg2: #040d1a;
+  --card: #060f1f;
+  --border: #0a2040;
+  --cyan: #00f5ff;
+  --blue: #0066ff;
+  --purple: #7c3aed;
+  --pink: #ff006e;
+  --green: #00ff88;
+  --yellow: #ffd700;
+  --orange: #ff6b00;
+  --text: #c8e6ff;
+  --dim: #4a6b8a;
+  --glow: 0 0 20px rgba(0,245,255,0.3);
+  --glow2: 0 0 30px rgba(0,102,255,0.4);
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Rajdhani', sans-serif;
+  overflow-x: hidden;
+  min-height: 100vh;
+}
+
+/* PARTICLE BG */
+#particles { position:fixed; top:0; left:0; width:100%; height:100%; pointer-events:none; z-index:0; overflow:hidden; }
+.particle { position:absolute; border-radius:50%; animation: floatUp linear infinite; opacity:0.6; }
+@keyframes floatUp {
+  0% { transform: translateY(100vh) translateX(0); opacity:0; }
+  10% { opacity:0.6; }
+  90% { opacity:0.6; }
+  100% { transform: translateY(-10vh) translateX(40px); opacity:0; }
+}
+
+/* MATRIX RAIN */
+#matrix { position:fixed; top:0; left:0; width:100%; height:100%; pointer-events:none; z-index:0; opacity:0.04; }
+
+/* SCAN LINE */
+body::after {
+  content:''; position:fixed; top:0; left:0; width:100%; height:100%;
+  background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,245,255,0.01) 2px, rgba(0,245,255,0.01) 4px);
+  pointer-events:none; z-index:999;
+}
+
+/* LAYOUT */
+.wrapper { position:relative; z-index:1; display:flex; min-height:100vh; }
+
+/* SIDEBAR */
+.sidebar {
+  width: 240px; min-height: 100vh;
+  background: linear-gradient(180deg, #020c1e 0%, #030a16 100%);
+  border-right: 1px solid var(--border);
+  padding: 0;
+  position: fixed; left:0; top:0; bottom:0;
+  display: flex; flex-direction: column;
+  box-shadow: 4px 0 30px rgba(0,102,255,0.1);
+  z-index: 100;
+}
+
+.sidebar-logo {
+  padding: 24px 20px 20px;
+  border-bottom: 1px solid var(--border);
+  text-align: center;
+}
+.sidebar-logo .logo-icon {
+  width: 50px; height: 50px; margin: 0 auto 10px;
+  background: linear-gradient(135deg, var(--cyan), var(--blue));
+  clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 22px; animation: spinHex 8s linear infinite;
+  box-shadow: 0 0 25px rgba(0,245,255,0.5);
+}
+@keyframes spinHex { 0%{filter:hue-rotate(0deg);} 100%{filter:hue-rotate(360deg);} }
+.logo-title { font-family:'Orbitron',monospace; font-size:14px; font-weight:900; color:var(--cyan); letter-spacing:3px; text-shadow: var(--glow); }
+.logo-sub { font-size:10px; color:var(--dim); letter-spacing:2px; margin-top:2px; font-family:'Share Tech Mono',monospace; }
+
+/* Online indicator */
+.online-badge {
+  display: flex; align-items: center; gap: 6px;
+  padding: 8px 20px; font-size:11px; color:var(--green);
+  font-family:'Share Tech Mono',monospace;
+  border-bottom: 1px solid var(--border);
+}
+.online-dot { width:7px; height:7px; border-radius:50%; background:var(--green); box-shadow:0 0 8px var(--green); animation: pulse 2s infinite; }
+@keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:0.4;} }
+
+.nav-section { padding: 14px 0 4px; }
+.nav-label { font-size:10px; color:var(--dim); letter-spacing:3px; padding: 4px 20px 8px; font-family:'Share Tech Mono',monospace; }
+.nav-item {
+  display: flex; align-items: center; gap: 12px;
+  padding: 10px 20px; cursor: pointer;
+  transition: all 0.2s; position:relative;
+  font-size: 13px; font-weight: 600; color: var(--dim);
+  letter-spacing: 0.5px;
+}
+.nav-item:hover, .nav-item.active {
+  color: var(--cyan); background: rgba(0,245,255,0.05);
+}
+.nav-item.active::before {
+  content:''; position:absolute; left:0; top:0; bottom:0; width:3px;
+  background: linear-gradient(180deg, var(--cyan), var(--blue));
+  box-shadow: 0 0 10px var(--cyan);
+}
+.nav-item .icon { font-size:16px; width:20px; text-align:center; }
+.nav-badge {
+  margin-left:auto; background: var(--pink); color:#fff;
+  font-size:9px; padding:2px 6px; border-radius:10px;
+  font-weight:700;
+}
+.nav-badge.green { background:var(--green); color:#000; }
+
+.sidebar-footer {
+  margin-top:auto; padding:16px 20px;
+  border-top: 1px solid var(--border);
+}
+.user-mini { display:flex; align-items:center; gap:10px; }
+.user-avatar-sm {
+  width:36px; height:36px; border-radius:8px;
+  background: linear-gradient(135deg, var(--blue), var(--purple));
+  display:flex; align-items:center; justify-content:center;
+  font-size:16px; border:1px solid var(--cyan);
+  box-shadow: 0 0 12px rgba(0,245,255,0.3);
+}
+.user-mini-info .name { font-size:12px; font-weight:700; color:var(--text); }
+.user-mini-info .rank { font-size:10px; color:var(--yellow); font-family:'Share Tech Mono'; }
+
+/* MAIN */
+.main { margin-left:240px; flex:1; padding:20px; }
+
+/* TOP BAR */
+.topbar {
+  display:flex; align-items:center; justify-content:space-between;
+  padding:12px 20px; background:var(--card);
+  border:1px solid var(--border); border-radius:12px;
+  margin-bottom:20px;
+  box-shadow: var(--glow2);
+}
+.topbar-left { display:flex; align-items:center; gap:16px; }
+.page-title { font-family:'Orbitron',monospace; font-size:18px; color:var(--cyan); text-shadow:var(--glow); }
+.breadcrumb { font-size:12px; color:var(--dim); font-family:'Share Tech Mono'; }
+
+.topbar-right { display:flex; align-items:center; gap:12px; }
+.server-status { display:flex; align-items:center; gap:6px; font-size:11px; font-family:'Share Tech Mono'; }
+.server-status.ok { color:var(--green); }
+.status-dot { width:6px; height:6px; border-radius:50%; background:var(--green); box-shadow:0 0 8px var(--green); animation:pulse 2s infinite; }
+.topbar-btn {
+  padding:6px 14px; border-radius:6px; border:1px solid var(--border);
+  background:rgba(0,102,255,0.1); color:var(--cyan); font-size:11px;
+  cursor:pointer; font-family:'Share Tech Mono'; letter-spacing:1px;
+  transition:all 0.2s;
+}
+.topbar-btn:hover { background:rgba(0,245,255,0.15); border-color:var(--cyan); }
+
+.notif-bell { position:relative; cursor:pointer; font-size:18px; }
+.notif-count {
+  position:absolute; top:-5px; right:-5px;
+  background:var(--pink); color:#fff; font-size:9px;
+  padding:1px 5px; border-radius:10px; font-weight:700;
+}
+
+/* STAT CARDS ROW */
+.stats-row { display:grid; grid-template-columns:repeat(4,1fr); gap:14px; margin-bottom:20px; }
+.stat-card {
+  background:var(--card); border:1px solid var(--border);
+  border-radius:12px; padding:16px 18px; position:relative; overflow:hidden;
+  transition:all 0.3s; cursor:default;
+}
+.stat-card:hover { border-color:var(--cyan); box-shadow: var(--glow); transform:translateY(-2px); }
+.stat-card::before {
+  content:''; position:absolute; top:0; left:0; right:0; height:2px;
+}
+.stat-card.cyan::before { background:linear-gradient(90deg,transparent,var(--cyan),transparent); }
+.stat-card.blue::before { background:linear-gradient(90deg,transparent,var(--blue),transparent); }
+.stat-card.green::before { background:linear-gradient(90deg,transparent,var(--green),transparent); }
+.stat-card.yellow::before { background:linear-gradient(90deg,transparent,var(--yellow),transparent); }
+.stat-card.pink::before { background:linear-gradient(90deg,transparent,var(--pink),transparent); }
+.stat-card.purple::before { background:linear-gradient(90deg,transparent,var(--purple),transparent); }
+.stat-card.orange::before { background:linear-gradient(90deg,transparent,var(--orange),transparent); }
+
+.stat-label { font-size:11px; color:var(--dim); letter-spacing:2px; text-transform:uppercase; font-family:'Share Tech Mono'; margin-bottom:8px; }
+.stat-value { font-family:'Orbitron',monospace; font-size:26px; font-weight:900; }
+.stat-value.cyan { color:var(--cyan); text-shadow:var(--glow); }
+.stat-value.blue { color:var(--blue); text-shadow:var(--glow2); }
+.stat-value.green { color:var(--green); text-shadow:0 0 20px rgba(0,255,136,0.4); }
+.stat-value.yellow { color:var(--yellow); text-shadow:0 0 20px rgba(255,215,0,0.4); }
+.stat-value.pink { color:var(--pink); text-shadow:0 0 20px rgba(255,0,110,0.4); }
+.stat-value.purple { color:#a855f7; text-shadow:0 0 20px rgba(168,85,247,0.4); }
+.stat-card .stat-sub { font-size:11px; color:var(--green); margin-top:4px; }
+.stat-card .stat-sub.red { color:var(--pink); }
+.stat-trend { position:absolute; top:16px; right:16px; font-size:18px; opacity:0.4; }
+
+/* MAIN GRID */
+.grid-2 { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:20px; }
+.grid-3 { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-bottom:20px; }
+.grid-12 { display:grid; grid-template-columns:7fr 5fr; gap:16px; margin-bottom:20px; }
+.grid-21 { display:grid; grid-template-columns:5fr 7fr; gap:16px; margin-bottom:20px; }
+
+/* CARDS */
+.card {
+  background:var(--card); border:1px solid var(--border); border-radius:12px; overflow:hidden;
+}
+.card-header {
+  padding:14px 18px; border-bottom:1px solid var(--border);
+  display:flex; align-items:center; justify-content:space-between;
+  background: rgba(0,102,255,0.04);
+}
+.card-title { font-family:'Orbitron',monospace; font-size:12px; color:var(--cyan); letter-spacing:2px; display:flex; align-items:center; gap:8px; }
+.card-title .dot { width:6px; height:6px; border-radius:50%; background:var(--cyan); box-shadow:0 0 8px var(--cyan); animation:pulse 2s infinite; }
+.card-body { padding:16px 18px; }
+.card-tag { font-size:10px; color:var(--dim); font-family:'Share Tech Mono'; letter-spacing:1px; }
+
+/* PROFILE CARD */
+.profile-section { display:flex; gap:16px; align-items:flex-start; }
+.avatar-wrap { position:relative; flex-shrink:0; }
+.avatar-hex {
+  width:80px; height:80px;
+  background: linear-gradient(135deg, #0a1628, #0d2040);
+  clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+  display:flex; align-items:center; justify-content:center;
+  font-size:36px; border:2px solid var(--cyan);
+  box-shadow: 0 0 20px rgba(0,245,255,0.4);
+  animation: avatarGlow 3s ease-in-out infinite alternate;
+}
+@keyframes avatarGlow { 0%{box-shadow:0 0 15px rgba(0,245,255,0.3);} 100%{box-shadow:0 0 35px rgba(0,245,255,0.7);} }
+.vip-badge {
+  position:absolute; bottom:-4px; right:-4px;
+  background:linear-gradient(135deg,var(--yellow),var(--orange));
+  color:#000; font-size:8px; font-weight:900; padding:2px 6px; border-radius:8px;
+  font-family:'Orbitron'; letter-spacing:1px;
+}
+.profile-info { flex:1; }
+.profile-uid { font-family:'Share Tech Mono'; font-size:10px; color:var(--dim); margin-bottom:4px; }
+.profile-name { font-family:'Orbitron',monospace; font-size:18px; font-weight:900; color:#fff; margin-bottom:4px; text-shadow: var(--glow); }
+.profile-level {
+  display:inline-flex; align-items:center; gap:6px;
+  background:linear-gradient(135deg,var(--blue),var(--purple));
+  padding:3px 10px; border-radius:20px; font-size:11px; font-weight:700;
+  margin-bottom:8px; font-family:'Share Tech Mono';
+}
+.badges-row { display:flex; gap:6px; flex-wrap:wrap; margin-top:8px; }
+.badge-chip {
+  font-size:9px; padding:3px 8px; border-radius:12px; font-family:'Share Tech Mono';
+  border:1px solid;
+}
+.badge-chip.gold { color:var(--yellow); border-color:var(--yellow); background:rgba(255,215,0,0.1); }
+.badge-chip.cyan { color:var(--cyan); border-color:var(--cyan); background:rgba(0,245,255,0.08); }
+.badge-chip.green { color:var(--green); border-color:var(--green); background:rgba(0,255,136,0.08); }
+.badge-chip.purple { color:#a855f7; border-color:#a855f7; background:rgba(168,85,247,0.08); }
+
+/* RANK CARD */
+.rank-display { text-align:center; padding:10px 0; }
+.rank-icon { font-size:60px; animation: rankFloat 3s ease-in-out infinite; }
+@keyframes rankFloat { 0%,100%{transform:translateY(0);} 50%{transform:translateY(-8px);} }
+.rank-name { font-family:'Orbitron'; font-size:20px; color:var(--yellow); font-weight:900; text-shadow:0 0 20px rgba(255,215,0,0.5); }
+.rank-pts { font-size:13px; color:var(--dim); margin-top:4px; font-family:'Share Tech Mono'; }
+.rank-bar-wrap { margin-top:12px; }
+.rank-bar-label { display:flex; justify-content:space-between; font-size:10px; font-family:'Share Tech Mono'; color:var(--dim); margin-bottom:6px; }
+.rank-bar { height:6px; background:var(--border); border-radius:3px; overflow:hidden; }
+.rank-bar-fill { height:100%; background:linear-gradient(90deg,var(--yellow),var(--orange)); border-radius:3px; animation:barLoad 1.5s ease-out; }
+@keyframes barLoad { from{width:0;} }
+
+/* CHART BARS */
+.chart-bars { display:flex; align-items:flex-end; gap:8px; height:100px; padding-top:10px; }
+.bar-col { flex:1; display:flex; flex-direction:column; align-items:center; gap:6px; }
+.bar-fill {
+  width:100%; border-radius:4px 4px 0 0; min-height:4px;
+  animation: barGrow 1s ease-out;
+  position:relative; overflow:hidden;
+}
+.bar-fill::after {
+  content:''; position:absolute; top:0; left:0; right:0; height:40%;
+  background: rgba(255,255,255,0.15);
+}
+@keyframes barGrow { from{transform:scaleY(0); transform-origin:bottom;} to{transform:scaleY(1);} }
+.bar-label { font-size:9px; color:var(--dim); font-family:'Share Tech Mono'; }
+
+/* CIRCLE STATS */
+.circle-stats { display:flex; justify-content:space-around; align-items:center; }
+.circle-stat { text-align:center; }
+.ring-wrap { position:relative; width:80px; height:80px; margin:0 auto 8px; }
+.ring-wrap svg { transform:rotate(-90deg); }
+.ring-bg { fill:none; stroke:var(--border); stroke-width:6; }
+.ring-fill { fill:none; stroke-width:6; stroke-linecap:round; transition:stroke-dashoffset 1.5s ease; }
+.ring-text { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); text-align:center; }
+.ring-pct { font-family:'Orbitron'; font-size:13px; font-weight:900; }
+.ring-lbl { font-size:9px; color:var(--dim); font-family:'Share Tech Mono'; margin-top:2px; }
+
+/* LEADERBOARD */
+.lb-item {
+  display:flex; align-items:center; gap:12px; padding:10px 0;
+  border-bottom:1px solid rgba(10,32,64,0.8);
+  transition:all 0.2s; cursor:default;
+}
+.lb-item:last-child { border-bottom:none; }
+.lb-item:hover { background:rgba(0,245,255,0.03); padding-left:6px; }
+.lb-rank { font-family:'Orbitron'; font-size:14px; font-weight:900; width:28px; text-align:center; }
+.lb-rank.gold { color:var(--yellow); text-shadow:0 0 10px rgba(255,215,0,0.5); }
+.lb-rank.silver { color:#c0c0c0; }
+.lb-rank.bronze { color:#cd7f32; }
+.lb-rank.normal { color:var(--dim); }
+.lb-avatar { width:32px; height:32px; border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:16px; flex-shrink:0; }
+.lb-name { flex:1; font-size:13px; font-weight:600; }
+.lb-val { font-family:'Orbitron'; font-size:13px; color:var(--cyan); }
+.lb-bar { height:3px; border-radius:2px; margin-top:3px; }
+
+/* ACTIVITY FEED */
+.activity-item {
+  display:flex; align-items:flex-start; gap:10px; padding:10px 0;
+  border-bottom:1px solid rgba(10,32,64,0.6);
+  font-size:12px;
+}
+.activity-item:last-child { border-bottom:none; }
+.activity-icon { width:28px; height:28px; border-radius:6px; display:flex; align-items:center; justify-content:center; font-size:13px; flex-shrink:0; }
+.activity-icon.kill { background:rgba(255,0,110,0.15); }
+.activity-icon.win { background:rgba(255,215,0,0.15); }
+.activity-icon.rank { background:rgba(0,245,255,0.1); }
+.activity-icon.friend { background:rgba(0,255,136,0.1); }
+.activity-icon.event { background:rgba(124,58,237,0.15); }
+.activity-text { flex:1; color:var(--text); line-height:1.4; }
+.activity-text strong { color:#fff; }
+.activity-time { font-family:'Share Tech Mono'; font-size:10px; color:var(--dim); white-space:nowrap; }
+
+/* TOOLS GRID */
+.tools-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:10px; }
+.tool-btn {
+  background:rgba(0,102,255,0.06); border:1px solid var(--border);
+  border-radius:10px; padding:12px; cursor:pointer; transition:all 0.2s;
+  display:flex; align-items:center; gap:10px;
+}
+.tool-btn:hover { border-color:var(--cyan); background:rgba(0,245,255,0.08); box-shadow:var(--glow); }
+.tool-icon { font-size:20px; }
+.tool-info .tool-name { font-size:12px; font-weight:700; color:var(--text); }
+.tool-info .tool-desc { font-size:10px; color:var(--dim); font-family:'Share Tech Mono'; }
+
+/* AI ASSISTANT */
+.ai-box {
+  background: linear-gradient(135deg,rgba(0,245,255,0.05),rgba(0,102,255,0.08));
+  border:1px solid rgba(0,245,255,0.2); border-radius:10px; padding:14px;
+}
+.ai-header { display:flex; align-items:center; gap:8px; margin-bottom:10px; }
+.ai-avatar { width:32px; height:32px; background:linear-gradient(135deg,var(--cyan),var(--blue)); border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:16px; box-shadow:var(--glow); animation:pulse 3s infinite; }
+.ai-name { font-family:'Orbitron'; font-size:11px; color:var(--cyan); }
+.ai-text { font-size:12px; color:var(--text); line-height:1.6; }
+.ai-text .highlight { color:var(--cyan); font-weight:600; }
+.ai-text .highlight.yellow { color:var(--yellow); }
+.ai-text .highlight.green { color:var(--green); }
+.ai-actions { display:flex; gap:8px; margin-top:10px; }
+.ai-btn {
+  flex:1; padding:7px; border-radius:6px; border:1px solid var(--border);
+  background:rgba(0,102,255,0.1); color:var(--cyan); font-size:10px;
+  cursor:pointer; font-family:'Share Tech Mono'; letter-spacing:1px;
+  transition:all 0.2s; text-align:center;
+}
+.ai-btn:hover { background:rgba(0,245,255,0.15); border-color:var(--cyan); }
+
+/* SERVER STATUS */
+.server-list { display:flex; flex-direction:column; gap:10px; }
+.server-item { display:flex; align-items:center; gap:10px; }
+.server-flag { font-size:18px; }
+.server-name { flex:1; font-size:12px; font-weight:600; }
+.server-ping { font-family:'Share Tech Mono'; font-size:11px; }
+.server-ping.good { color:var(--green); }
+.server-ping.ok { color:var(--yellow); }
+.server-ping.bad { color:var(--pink); }
+.ping-bar { width:80px; height:4px; background:var(--border); border-radius:2px; overflow:hidden; }
+.ping-fill { height:100%; border-radius:2px; }
+.ping-fill.good { background:var(--green); }
+.ping-fill.ok { background:var(--yellow); }
+.ping-fill.bad { background:var(--pink); }
+
+/* CHAT */
+.chat-msgs { height:160px; overflow-y:auto; margin-bottom:12px; display:flex; flex-direction:column; gap:8px; }
+.chat-msgs::-webkit-scrollbar { width:3px; }
+.chat-msgs::-webkit-scrollbar-thumb { background:var(--border); border-radius:2px; }
+.chat-msg { display:flex; gap:8px; align-items:flex-start; }
+.chat-avatar-sm { width:24px; height:24px; border-radius:6px; display:flex; align-items:center; justify-content:center; font-size:11px; flex-shrink:0; }
+.chat-bubble { background:rgba(4,13,26,0.8); border:1px solid var(--border); border-radius:8px; padding:6px 10px; flex:1; }
+.chat-user { font-size:10px; font-weight:700; margin-bottom:2px; font-family:'Share Tech Mono'; }
+.chat-text { font-size:11px; color:var(--text); }
+.chat-time { font-size:9px; color:var(--dim); margin-top:2px; font-family:'Share Tech Mono'; }
+.chat-input-row { display:flex; gap:8px; }
+.chat-input {
+  flex:1; background:rgba(4,13,26,0.8); border:1px solid var(--border);
+  border-radius:8px; padding:8px 12px; color:var(--text); font-size:12px;
+  font-family:'Rajdhani'; outline:none; transition:border-color 0.2s;
+}
+.chat-input:focus { border-color:var(--cyan); }
+.chat-send {
+  padding:8px 14px; background:linear-gradient(135deg,var(--cyan),var(--blue));
+  border:none; border-radius:8px; color:#000; font-weight:700; font-size:12px;
+  cursor:pointer; font-family:'Rajdhani'; transition:all 0.2s;
+}
+.chat-send:hover { box-shadow:var(--glow); }
+
+/* EVENT CARDS */
+.event-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:10px; }
+.event-card {
+  border-radius:10px; padding:14px; border:1px solid var(--border);
+  background:linear-gradient(135deg,rgba(4,13,26,0.9),rgba(6,15,31,0.9));
+  cursor:pointer; transition:all 0.2s; position:relative; overflow:hidden;
+}
+.event-card:hover { transform:translateY(-2px); box-shadow:var(--glow); border-color:var(--cyan); }
+.event-card::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; }
+.event-card.fire::before { background:linear-gradient(90deg,var(--orange),var(--pink)); }
+.event-card.cyber::before { background:linear-gradient(90deg,var(--cyan),var(--blue)); }
+.event-card.gold::before { background:linear-gradient(90deg,var(--yellow),var(--orange)); }
+.event-card.purple::before { background:linear-gradient(90deg,var(--purple),var(--pink)); }
+.event-title { font-size:12px; font-weight:700; margin-bottom:4px; }
+.event-desc { font-size:10px; color:var(--dim); font-family:'Share Tech Mono'; margin-bottom:8px; }
+.event-timer { font-family:'Orbitron'; font-size:11px; display:flex; align-items:center; gap:5px; }
+.event-timer.fire { color:var(--orange); }
+.event-timer.cyber { color:var(--cyan); }
+.event-timer.gold { color:var(--yellow); }
+.event-timer.purple { color:#a855f7; }
+
+/* ACHIEVEMENT */
+.achievement-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; }
+.ach-item { text-align:center; padding:10px; border-radius:10px; border:1px solid var(--border); background:rgba(4,13,26,0.5); transition:all 0.2s; cursor:default; }
+.ach-item:hover { border-color:var(--cyan); background:rgba(0,245,255,0.05); }
+.ach-icon { font-size:28px; margin-bottom:6px; }
+.ach-name { font-size:10px; font-weight:700; font-family:'Share Tech Mono'; color:var(--text); }
+.ach-locked { filter:grayscale(1); opacity:0.4; }
+
+/* THEME SWITCHER */
+.theme-row { display:flex; gap:8px; flex-wrap:wrap; }
+.theme-dot {
+  width:32px; height:32px; border-radius:50%; cursor:pointer;
+  border:2px solid transparent; transition:all 0.2s;
+  display:flex; align-items:center; justify-content:center; font-size:14px;
+}
+.theme-dot:hover, .theme-dot.active { border-color:#fff; transform:scale(1.2); box-shadow:0 0 12px rgba(255,255,255,0.4); }
+.theme-dot.cyan { background:linear-gradient(135deg,#00f5ff,#0066ff); }
+.theme-dot.purple { background:linear-gradient(135deg,#7c3aed,#ec4899); }
+.theme-dot.green { background:linear-gradient(135deg,#00ff88,#00cc6a); }
+.theme-dot.fire { background:linear-gradient(135deg,#ff6b00,#ff003c); }
+.theme-dot.gold { background:linear-gradient(135deg,#ffd700,#ff8c00); }
+
+/* LIVE COUNTER */
+.live-num {
+  font-family:'Orbitron',monospace; font-size:28px; font-weight:900;
+  color:var(--cyan); text-shadow:var(--glow);
+}
+
+/* HEATMAP */
+.heatmap { display:grid; grid-template-columns:repeat(7,1fr); gap:3px; }
+.hm-cell {
+  aspect-ratio:1; border-radius:3px; cursor:default; transition:all 0.2s;
+}
+.hm-cell:hover { transform:scale(1.3); z-index:10; }
+.hm-0 { background:var(--border); }
+.hm-1 { background:rgba(0,245,255,0.2); }
+.hm-2 { background:rgba(0,245,255,0.4); }
+.hm-3 { background:rgba(0,245,255,0.6); }
+.hm-4 { background:rgba(0,245,255,0.85); }
+.hm-days { display:grid; grid-template-columns:repeat(7,1fr); gap:3px; margin-bottom:4px; }
+.hm-day-label { font-size:9px; color:var(--dim); font-family:'Share Tech Mono'; text-align:center; }
+
+/* DEVICE PERF */
+.device-stats { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+.device-stat { }
+.device-stat-label { font-size:10px; color:var(--dim); font-family:'Share Tech Mono'; margin-bottom:5px; display:flex; justify-content:space-between; }
+.device-stat-val { font-weight:700; color:var(--cyan); }
+.mini-bar { height:5px; background:var(--border); border-radius:3px; overflow:hidden; }
+.mini-bar-fill { height:100%; border-radius:3px; }
+
+/* SEASON COMPARISON */
+.season-row { display:flex; gap:8px; margin-bottom:10px; }
+.season-tab {
+  padding:5px 12px; border-radius:20px; font-size:11px; font-family:'Share Tech Mono';
+  cursor:pointer; border:1px solid var(--border); background:transparent; color:var(--dim);
+  transition:all 0.2s;
+}
+.season-tab.active { background:rgba(0,245,255,0.1); color:var(--cyan); border-color:var(--cyan); }
+
+.compare-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+.compare-item { padding:10px; background:rgba(4,13,26,0.6); border-radius:8px; border:1px solid var(--border); }
+.compare-label { font-size:10px; color:var(--dim); font-family:'Share Tech Mono'; margin-bottom:4px; }
+.compare-vals { display:flex; gap:8px; align-items:center; }
+.compare-old { font-size:13px; color:var(--dim); text-decoration:line-through; font-family:'Share Tech Mono'; }
+.compare-arrow { color:var(--green); font-size:12px; }
+.compare-arrow.red { color:var(--pink); }
+.compare-new { font-size:14px; font-weight:700; color:#fff; font-family:'Orbitron'; }
+
+/* VIP CARD */
+.vip-card {
+  background:linear-gradient(135deg,rgba(255,215,0,0.08),rgba(255,140,0,0.05));
+  border:1px solid rgba(255,215,0,0.3); border-radius:12px; padding:16px;
+  position:relative; overflow:hidden;
+}
+.vip-card::before {
+  content:''; position:absolute; top:-50%; right:-30%;
+  width:200px; height:200px; border-radius:50%;
+  background:radial-gradient(circle,rgba(255,215,0,0.06),transparent);
+}
+.vip-title { font-family:'Orbitron'; font-size:14px; color:var(--yellow); font-weight:900; display:flex; align-items:center; gap:8px; }
+.vip-perks { display:flex; flex-direction:column; gap:6px; margin-top:12px; }
+.vip-perk { display:flex; align-items:center; gap:8px; font-size:12px; }
+.vip-perk-icon { color:var(--yellow); }
+
+/* NETWORK MONITOR */
+.network-stats { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; }
+.net-stat { text-align:center; }
+.net-label { font-size:10px; color:var(--dim); font-family:'Share Tech Mono'; margin-bottom:6px; }
+.net-val { font-family:'Orbitron'; font-size:18px; font-weight:900; }
+.net-val.green { color:var(--green); text-shadow:0 0 15px rgba(0,255,136,0.4); }
+.net-val.yellow { color:var(--yellow); }
+.net-val.cyan { color:var(--cyan); text-shadow:var(--glow); }
+
+/* LIVE INDICATOR */
+.live-tag {
+  background:var(--pink); color:#fff; font-size:9px; font-weight:900;
+  padding:2px 8px; border-radius:10px; font-family:'Orbitron'; letter-spacing:2px;
+  animation:pulse 1.5s infinite; display:inline-block;
+}
+
+/* QR */
+.qr-box { display:flex; gap:16px; align-items:center; }
+.qr-placeholder {
+  width:80px; height:80px; background:rgba(0,245,255,0.05); border:1px solid var(--cyan);
+  border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:11px;
+  color:var(--cyan); font-family:'Share Tech Mono'; text-align:center; padding:8px; flex-shrink:0;
+  box-shadow:var(--glow);
+}
+.qr-info .qr-title { font-size:13px; font-weight:700; margin-bottom:4px; }
+.qr-info .qr-desc { font-size:11px; color:var(--dim); font-family:'Share Tech Mono'; line-height:1.5; }
+
+/* SCROLL CUSTOM */
+::-webkit-scrollbar { width:4px; height:4px; }
+::-webkit-scrollbar-track { background:var(--bg2); }
+::-webkit-scrollbar-thumb { background:var(--border); border-radius:2px; }
+
+/* RESPONSIVE spacing */
+.mb-16 { margin-bottom:16px; }
+.section-spacer { margin-bottom:20px; }
+.full-width { grid-column:1/-1; }
+
+/* GLITCH effect on title */
+.glitch { position:relative; }
+.glitch::before, .glitch::after {
+  content:attr(data-text); position:absolute; top:0; left:0; width:100%; height:100%;
+}
+.glitch::before { color:var(--pink); animation:glitchA 3s infinite; clip-path:polygon(0 0,100% 0,100% 33%,0 33%); }
+.glitch::after { color:var(--cyan); animation:glitchB 3s infinite; clip-path:polygon(0 67%,100% 67%,100% 100%,0 100%); }
+@keyframes glitchA { 0%,95%,100%{transform:translate(0);} 96%{transform:translate(-2px,1px);} 98%{transform:translate(2px,-1px);} }
+@keyframes glitchB { 0%,95%,100%{transform:translate(0);} 97%{transform:translate(2px,-1px);} 99%{transform:translate(-2px,1px);} }
+
+/* TABS */
+.tabs { display:flex; gap:4px; margin-bottom:14px; }
+.tab { padding:5px 12px; border-radius:6px; font-size:11px; font-family:'Share Tech Mono'; cursor:pointer; border:1px solid var(--border); color:var(--dim); background:transparent; transition:all 0.2s; }
+.tab.active { color:var(--cyan); border-color:var(--cyan); background:rgba(0,245,255,0.08); }
+.tab:hover { color:var(--text); border-color:var(--dim); }
+
+/* DIAMOND CALC */
+.calc-row { display:flex; gap:10px; align-items:center; margin-bottom:10px; }
+.calc-input {
+  flex:1; background:rgba(4,13,26,0.8); border:1px solid var(--border); border-radius:8px;
+  padding:8px 12px; color:var(--text); font-size:13px; font-family:'Rajdhani'; outline:none;
+  transition:border-color 0.2s;
+}
+.calc-input:focus { border-color:var(--cyan); }
+.calc-label { font-size:11px; color:var(--dim); font-family:'Share Tech Mono'; width:60px; }
+.calc-result { background:rgba(0,245,255,0.05); border:1px solid rgba(0,245,255,0.2); border-radius:8px; padding:10px 14px; display:flex; justify-content:space-between; align-items:center; }
+.calc-result-label { font-size:11px; color:var(--dim); font-family:'Share Tech Mono'; }
+.calc-result-val { font-family:'Orbitron'; font-size:18px; color:var(--cyan); font-weight:900; text-shadow:var(--glow); }
+
+/* NAME GENERATOR */
+.gen-output { background:linear-gradient(135deg,rgba(0,245,255,0.05),rgba(0,102,255,0.08)); border:1px solid rgba(0,245,255,0.2); border-radius:8px; padding:14px; text-align:center; min-height:50px; display:flex; align-items:center; justify-content:center; margin-bottom:10px; }
+.gen-name { font-family:'Orbitron'; font-size:16px; font-weight:900; color:var(--cyan); text-shadow:var(--glow); letter-spacing:3px; }
+.gen-btn { width:100%; padding:9px; background:linear-gradient(135deg,var(--blue),var(--purple)); border:none; border-radius:8px; color:#fff; font-family:'Orbitron'; font-size:11px; letter-spacing:2px; cursor:pointer; transition:all 0.2s; }
+.gen-btn:hover { box-shadow:var(--glow2); transform:translateY(-1px); }
+
+/* FOOTER STRIP */
+.footer-strip {
+  display:flex; align-items:center; justify-content:space-between;
+  padding:12px 20px; background:var(--card); border:1px solid var(--border);
+  border-radius:12px; margin-top:20px; font-size:11px; font-family:'Share Tech Mono';
+  color:var(--dim);
+}
+.footer-live { display:flex; align-items:center; gap:8px; color:var(--green); }
+
+/* SCROLL SECTION */
+.scroll-section { max-height:300px; overflow-y:auto; }
+
+/* LOADING BAR */
+.loading-bar { position:fixed; top:0; left:0; right:0; height:3px; background:linear-gradient(90deg,var(--cyan),var(--blue),var(--purple),var(--pink)); animation:loading 2s ease-out forwards; z-index:9999; }
+@keyframes loading { from{transform:scaleX(0); transform-origin:left;} to{transform:scaleX(1); transform-origin:left;} }
+
+/* RADAR */
+.radar-wrap { display:flex; justify-content:center; padding:10px 0; }
+
+</style>
+</head>
+<body>
+
+<div class="loading-bar"></div>
+<canvas id="matrix"></canvas>
+<div id="particles"></div>
+
+<div class="wrapper">
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-icon">⚡</div>
+    <div class="logo-title">NEXUS PRO</div>
+    <div class="logo-sub">FF ANALYTICS v2.0</div>
+  </div>
+  <div class="online-badge">
+    <div class="online-dot"></div>
+    <span>SYSTEM ONLINE — ALL CLEAR</span>
+  </div>
+
+  <div class="nav-section">
+    <div class="nav-label">MAIN</div>
+    <div class="nav-item active" onclick="showPage('dashboard')"><span class="icon">🏠</span> Dashboard</div>
+    <div class="nav-item" onclick="showPage('profile')"><span class="icon">👤</span> Profil Player</div>
+    <div class="nav-item" onclick="showPage('analytics')"><span class="icon">📈</span> Analytics <span class="nav-badge green">LIVE</span></div>
+  </div>
+
+  <div class="nav-section">
+    <div class="nav-label">FEATURES</div>
+    <div class="nav-item" onclick="showPage('tools')"><span class="icon">🎯</span> Tools</div>
+    <div class="nav-item" onclick="showPage('leaderboard')"><span class="icon">🏆</span> Leaderboard</div>
+    <div class="nav-item" onclick="showPage('community')"><span class="icon">💬</span> Komunitas <span class="nav-badge">3</span></div>
+    <div class="nav-item" onclick="showPage('events')"><span class="icon">🎪</span> Event Center</div>
+    <div class="nav-item" onclick="showPage('achievements')"><span class="icon">🎖️</span> Achievement</div>
+  </div>
+
+  <div class="nav-section">
+    <div class="nav-label">PREMIUM</div>
+    <div class="nav-item" onclick="showPage('vip')"><span class="icon">💎</span> VIP Center</div>
+    <div class="nav-item" onclick="showPage('customize')"><span class="icon">🎨</span> Kustomisasi</div>
+    <div class="nav-item" onclick="showPage('system')"><span class="icon">🔔</span> Sistem</div>
+  </div>
+
+  <div class="sidebar-footer">
+    <div class="user-mini">
+      <div class="user-avatar-sm">🎮</div>
+      <div class="user-mini-info">
+        <div class="name">◈ N3XUS_PRO</div>
+        <div class="rank">⭐ HEROIC III</div>
+      </div>
+    </div>
+  </div>
+</aside>
+
+<!-- MAIN CONTENT -->
+<main class="main">
+
+  <!-- TOP BAR -->
+  <div class="topbar">
+    <div class="topbar-left">
+      <div>
+        <div class="page-title glitch" data-text="DASHBOARD" id="pageTitle">DASHBOARD</div>
+        <div class="breadcrumb" id="breadcrumb">HOME / DASHBOARD</div>
+      </div>
+    </div>
+    <div class="topbar-right">
+      <div class="server-status ok"><div class="status-dot"></div> SERVER ID ONLINE</div>
+      <div class="server-status ok" style="color:var(--cyan)"><div class="status-dot" style="background:var(--cyan);box-shadow:0 0 8px var(--cyan)"></div> PING: <span id="pingVal">32</span>ms</div>
+      <div class="topbar-btn" onclick="refreshData()">⟳ REFRESH</div>
+      <div class="notif-bell" onclick="showPage('system')">🔔<span class="notif-count">5</span></div>
+      <div class="user-avatar-sm" style="width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,var(--blue),var(--purple));display:flex;align-items:center;justify-content:center;font-size:14px;border:1px solid var(--cyan)">🎮</div>
+    </div>
+  </div>
+
+  <!-- ============ PAGES ============ -->
+
+  <!-- DASHBOARD PAGE -->
+  <div id="page-dashboard">
+
+    <!-- STAT CARDS -->
+    <div class="stats-row">
+      <div class="stat-card cyan">
+        <div class="stat-label">TOTAL MATCH</div>
+        <div class="stat-value cyan" id="counter1">0</div>
+        <div class="stat-sub">↑ +12 hari ini</div>
+        <div class="stat-trend">⚔️</div>
+      </div>
+      <div class="stat-card green">
+        <div class="stat-label">TOTAL KILL</div>
+        <div class="stat-value green" id="counter2">0</div>
+        <div class="stat-sub">↑ +89 minggu ini</div>
+        <div class="stat-trend">💀</div>
+      </div>
+      <div class="stat-card yellow">
+        <div class="stat-label">HEADSHOT RATE</div>
+        <div class="stat-value yellow">68.4<span style="font-size:14px">%</span></div>
+        <div class="stat-sub">↑ +2.1% vs kemarin</div>
+        <div class="stat-trend">🎯</div>
+      </div>
+      <div class="stat-card pink">
+        <div class="stat-label">K/D RATIO</div>
+        <div class="stat-value pink">4.87</div>
+        <div class="stat-sub">↑ +0.3 bulan ini</div>
+        <div class="stat-trend">📊</div>
+      </div>
+    </div>
+    <div class="stats-row">
+      <div class="stat-card blue">
+        <div class="stat-label">WIN RATE</div>
+        <div class="stat-value blue">42.1<span style="font-size:14px">%</span></div>
+        <div class="stat-sub">↑ Top 5%</div>
+        <div class="stat-trend">🏆</div>
+      </div>
+      <div class="stat-card purple">
+        <div class="stat-label">BOOYAH COUNT</div>
+        <div class="stat-value purple" id="counter3">0</div>
+        <div class="stat-sub red">→ 3 streak aktif</div>
+        <div class="stat-trend">👑</div>
+      </div>
+      <div class="stat-card cyan" style="grid-column:span 2">
+        <div class="stat-label">RANK SAAT INI — HEROIC III</div>
+        <div style="display:flex;align-items:center;gap:16px;margin-top:4px">
+          <div class="stat-value yellow">2,840 <span style="font-size:14px;color:var(--dim)">pts</span></div>
+          <div style="flex:1">
+            <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--dim);font-family:'Share Tech Mono';margin-bottom:6px"><span>HEROIC III</span><span>3,000 → HEROIC II</span></div>
+            <div style="height:8px;background:var(--border);border-radius:4px;overflow:hidden"><div style="height:100%;width:72%;background:linear-gradient(90deg,var(--yellow),var(--orange));border-radius:4px;animation:barLoad 2s ease-out"></div></div>
+          </div>
+        </div>
+        <div class="stat-trend">⭐</div>
+      </div>
+    </div>
+
+    <!-- MIDDLE SECTION -->
+    <div class="grid-12 mb-16">
+
+      <!-- Performance Chart -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title"><span class="dot"></span> PERFORMA HARIAN</div>
+          <span class="live-tag">LIVE</span>
+        </div>
+        <div class="card-body">
+          <div class="tabs">
+            <div class="tab active">Kill</div>
+            <div class="tab">Damage</div>
+            <div class="tab">Win</div>
+          </div>
+          <div class="chart-bars">
+            <div class="bar-col"><div class="bar-fill" style="height:55%;background:linear-gradient(180deg,var(--cyan),rgba(0,245,255,0.2))"></div><div class="bar-label">SEN</div></div>
+            <div class="bar-col"><div class="bar-fill" style="height:70%;background:linear-gradient(180deg,var(--cyan),rgba(0,245,255,0.2))"></div><div class="bar-label">SEL</div></div>
+            <div class="bar-col"><div class="bar-fill" style="height:45%;background:linear-gradient(180deg,var(--cyan),rgba(0,245,255,0.2))"></div><div class="bar-label">RAB</div></div>
+            <div class="bar-col"><div class="bar-fill" style="height:88%;background:linear-gradient(180deg,var(--yellow),rgba(255,215,0,0.2))"></div><div class="bar-label">KAM</div></div>
+            <div class="bar-col"><div class="bar-fill" style="height:60%;background:linear-gradient(180deg,var(--cyan),rgba(0,245,255,0.2))"></div><div class="bar-label">JUM</div></div>
+            <div class="bar-col"><div class="bar-fill" style="height:95%;background:linear-gradient(180deg,var(--green),rgba(0,255,136,0.2))"></div><div class="bar-label">SAB</div></div>
+            <div class="bar-col"><div class="bar-fill" style="height:78%;background:linear-gradient(180deg,var(--blue),rgba(0,102,255,0.2))"></div><div class="bar-label">MIN</div></div>
+          </div>
+          <div style="margin-top:14px">
+            <div class="circle-stats">
+              <div class="circle-stat">
+                <div class="ring-wrap">
+                  <svg width="80" height="80" viewBox="0 0 80 80">
+                    <circle class="ring-bg" cx="40" cy="40" r="30"/>
+                    <circle class="ring-fill" cx="40" cy="40" r="30" stroke="var(--cyan)" stroke-dasharray="188.5" stroke-dashoffset="60"/>
+                  </svg>
+                  <div class="ring-text"><div class="ring-pct" style="color:var(--cyan)">68%</div></div>
+                </div>
+                <div class="ring-lbl" style="font-size:10px;color:var(--dim);font-family:'Share Tech Mono'">HEADSHOT</div>
+              </div>
+              <div class="circle-stat">
+                <div class="ring-wrap">
+                  <svg width="80" height="80" viewBox="0 0 80 80">
+                    <circle class="ring-bg" cx="40" cy="40" r="30"/>
+                    <circle class="ring-fill" cx="40" cy="40" r="30" stroke="var(--green)" stroke-dasharray="188.5" stroke-dashoffset="110"/>
+                  </svg>
+                  <div class="ring-text"><div class="ring-pct" style="color:var(--green)">42%</div></div>
+                </div>
+                <div class="ring-lbl" style="font-size:10px;color:var(--dim);font-family:'Share Tech Mono'">WIN RATE</div>
+              </div>
+              <div class="circle-stat">
+                <div class="ring-wrap">
+                  <svg width="80" height="80" viewBox="0 0 80 80">
+                    <circle class="ring-bg" cx="40" cy="40" r="30"/>
+                    <circle class="ring-fill" cx="40" cy="40" r="30" stroke="var(--yellow)" stroke-dasharray="188.5" stroke-dashoffset="30"/>
+                  </svg>
+                  <div class="ring-text"><div class="ring-pct" style="color:var(--yellow)">84%</div></div>
+                </div>
+                <div class="ring-lbl" style="font-size:10px;color:var(--dim);font-family:'Share Tech Mono'">SURVIVAL</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right col -->
+      <div style="display:flex;flex-direction:column;gap:14px">
+
+        <!-- Profile Mini -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title"><span class="dot"></span> PROFIL AKTIF</div>
+            <span class="card-tag">UID: 521093847</span>
+          </div>
+          <div class="card-body">
+            <div class="profile-section">
+              <div class="avatar-wrap">
+                <div class="avatar-hex">🎮</div>
+                <div class="vip-badge">VIP</div>
+              </div>
+              <div class="profile-info">
+                <div class="profile-uid">UID: 521093847</div>
+                <div class="profile-name">◈ N3XUS_PRO</div>
+                <div class="profile-level">⭐ LVL 72</div>
+                <div class="badges-row">
+                  <div class="badge-chip gold">HEROIC</div>
+                  <div class="badge-chip cyan">VIP</div>
+                  <div class="badge-chip green">TOP 1%</div>
+                  <div class="badge-chip purple">OG</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- AI Assistant -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title"><span class="dot" style="background:var(--purple);box-shadow:0 0 8px var(--purple)"></span> AI ADVISOR</div>
+            <span class="card-tag" style="color:var(--purple)">AKTIF</span>
+          </div>
+          <div class="card-body">
+            <div class="ai-box">
+              <div class="ai-header">
+                <div class="ai-avatar">🤖</div>
+                <div><div class="ai-name">NEXUS AI v2.0</div></div>
+              </div>
+              <div class="ai-text">
+                Headshot rate kamu <span class="highlight">68.4%</span> — di atas rata-rata. Namun performa hari <span class="highlight yellow">Rabu</span> terlihat menurun. Pertimbangkan bermain di sesi pagi. Win rate <span class="highlight green">42.1%</span> dalam tren naik ↑
+              </div>
+              <div class="ai-actions">
+                <div class="ai-btn">📊 ANALISIS</div>
+                <div class="ai-btn">💡 TIPS</div>
+                <div class="ai-btn">📋 LAPORAN</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- BOTTOM SECTION -->
+    <div class="grid-21 mb-16">
+
+      <!-- Activity Feed -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title"><span class="dot" style="background:var(--green);box-shadow:0 0 8px var(--green)"></span> AKTIVITAS TERBARU</div>
+          <span class="live-tag">LIVE</span>
+        </div>
+        <div class="card-body scroll-section" id="activityFeed">
+          <div class="activity-item">
+            <div class="activity-icon kill">💀</div>
+            <div class="activity-text">Match berakhir — <strong>8 Kill</strong>, Rank #2 — Peta Bermuda</div>
+            <div class="activity-time">2m lalu</div>
+          </div>
+          <div class="activity-item">
+            <div class="activity-icon win">👑</div>
+            <div class="activity-text"><strong>BOOYAH!</strong> Squad Mode — 12 Kill total, MVP diraih</div>
+            <div class="activity-time">18m lalu</div>
+          </div>
+          <div class="activity-item">
+            <div class="activity-icon rank">⭐</div>
+            <div class="activity-text">Rank naik ke <strong>HEROIC III</strong> — +45 pts diperoleh</div>
+            <div class="activity-time">1j lalu</div>
+          </div>
+          <div class="activity-item">
+            <div class="activity-icon friend">👥</div>
+            <div class="activity-text"><strong>xPRO_Sniper</strong> menambahkan kamu sebagai teman</div>
+            <div class="activity-time">2j lalu</div>
+          </div>
+          <div class="activity-item">
+            <div class="activity-icon event">🎪</div>
+            <div class="activity-text">Event <strong>Cyber Hunt</strong> dimulai — 72 jam tersisa</div>
+            <div class="activity-time">3j lalu</div>
+          </div>
+          <div class="activity-item">
+            <div class="activity-icon kill">💀</div>
+            <div class="activity-text">Match selesai — <strong>6 Kill</strong>, Rank #5, Damage: 1,240</div>
+            <div class="activity-time">4j lalu</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Network + Server -->
+      <div style="display:flex;flex-direction:column;gap:14px">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title"><span class="dot" style="background:var(--green);box-shadow:0 0 8px var(--green)"></span> NETWORK MONITOR</div>
+          </div>
+          <div class="card-body">
+            <div class="network-stats">
+              <div class="net-stat">
+                <div class="net-label">PING</div>
+                <div class="net-val green" id="livePing">32ms</div>
+              </div>
+              <div class="net-stat">
+                <div class="net-label">PACKET LOSS</div>
+                <div class="net-val yellow">0.1%</div>
+              </div>
+              <div class="net-stat">
+                <div class="net-label">FPS AVG</div>
+                <div class="net-val cyan">58</div>
+              </div>
+            </div>
+            <div style="margin-top:14px">
+              <div class="server-list">
+                <div class="server-item">
+                  <div class="server-flag">🇮🇩</div>
+                  <div class="server-name" style="font-size:12px;font-weight:600">Indonesia</div>
+                  <div class="ping-bar"><div class="ping-fill good" style="width:20%"></div></div>
+                  <div class="server-ping good">32ms</div>
+                </div>
+                <div class="server-item">
+                  <div class="server-flag">🇸🇬</div>
+                  <div class="server-name" style="font-size:12px;font-weight:600">Singapore</div>
+                  <div class="ping-bar"><div class="ping-fill ok" style="width:45%"></div></div>
+                  <div class="server-ping ok">67ms</div>
+                </div>
+                <div class="server-item">
+                  <div class="server-flag">🇯🇵</div>
+                  <div class="server-name" style="font-size:12px;font-weight:600">Japan</div>
+                  <div class="ping-bar"><div class="ping-fill bad" style="width:75%"></div></div>
+                  <div class="server-ping bad">124ms</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Live Counter -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title"><span class="dot" style="background:var(--pink);box-shadow:0 0 8px var(--pink)"></span> LIVE ONLINE</div>
+            <span class="live-tag">LIVE</span>
+          </div>
+          <div class="card-body" style="text-align:center">
+            <div style="font-size:10px;color:var(--dim);font-family:'Share Tech Mono';margin-bottom:6px">PLAYER AKTIF SAAT INI</div>
+            <div class="live-num" id="liveCounter">0</div>
+            <div style="font-size:10px;color:var(--dim);font-family:'Share Tech Mono';margin-top:4px">Server Indonesia</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- HEATMAP + Device -->
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title"><span class="dot"></span> HEATMAP AKTIVITAS (28 HARI)</div>
+        </div>
+        <div class="card-body">
+          <div class="hm-days">
+            <div class="hm-day-label">SEN</div><div class="hm-day-label">SEL</div>
+            <div class="hm-day-label">RAB</div><div class="hm-day-label">KAM</div>
+            <div class="hm-day-label">JUM</div><div class="hm-day-label">SAB</div>
+            <div class="hm-day-label">MIN</div>
+          </div>
+          <div class="heatmap" id="heatmap"></div>
+          <div style="display:flex;align-items:center;gap:6px;margin-top:10px;font-size:10px;color:var(--dim);font-family:'Share Tech Mono'">
+            <span>Rendah</span>
+            <div style="width:12px;height:12px;border-radius:2px;background:var(--border)"></div>
+            <div style="width:12px;height:12px;border-radius:2px;background:rgba(0,245,255,0.2)"></div>
+            <div style="width:12px;height:12px;border-radius:2px;background:rgba(0,245,255,0.5)"></div>
+            <div style="width:12px;height:12px;border-radius:2px;background:var(--cyan)"></div>
+            <span>Tinggi</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title"><span class="dot" style="background:var(--orange);box-shadow:0 0 8px var(--orange)"></span> DEVICE PERFORMANCE</div>
+        </div>
+        <div class="card-body">
+          <div class="device-stats">
+            <div>
+              <div class="device-stat-label"><span>CPU</span><span class="device-stat-val">34%</span></div>
+              <div class="mini-bar"><div class="mini-bar-fill" style="width:34%;background:var(--green)"></div></div>
+            </div>
+            <div>
+              <div class="device-stat-label"><span>RAM</span><span class="device-stat-val">61%</span></div>
+              <div class="mini-bar"><div class="mini-bar-fill" style="width:61%;background:var(--yellow)"></div></div>
+            </div>
+            <div>
+              <div class="device-stat-label"><span>GPU</span><span class="device-stat-val">28%</span></div>
+              <div class="mini-bar"><div class="mini-bar-fill" style="width:28%;background:var(--cyan)"></div></div>
+            </div>
+            <div>
+              <div class="device-stat-label"><span>BATT</span><span class="device-stat-val">88%</span></div>
+              <div class="mini-bar"><div class="mini-bar-fill" style="width:88%;background:var(--green)"></div></div>
+            </div>
+            <div>
+              <div class="device-stat-label"><span>TEMP</span><span class="device-stat-val">42°C</span></div>
+              <div class="mini-bar"><div class="mini-bar-fill" style="width:42%;background:var(--orange)"></div></div>
+            </div>
+            <div>
+              <div class="device-stat-label"><span>STORAGE</span><span class="device-stat-val">55%</span></div>
+              <div class="mini-bar"><div class="mini-bar-fill" style="width:55%;background:var(--blue)"></div></div>
+            </div>
+          </div>
+          <div style="margin-top:14px;background:rgba(0,255,136,0.05);border:1px solid rgba(0,255,136,0.2);border-radius:8px;padding:10px;font-size:11px;color:var(--green);font-family:'Share Tech Mono'">
+            ✅ SEMUA SISTEM NORMAL — PERFORMA OPTIMAL
+          </div>
+        </div>
+      </div>
+    </div>
+  </div><!-- end dashboard -->
+
+  <!-- ===== PROFILE PAGE ===== -->
+  <div id="page-profile" style="display:none">
+    <div class="grid-12">
+      <div class="card">
+        <div class="card-header"><div class="card-title"><span class="dot"></span> DATA PROFIL LENGKAP</div></div>
+        <div class="card-body">
+          <div style="display:flex;gap:20px;align-items:flex-start;margin-bottom:20px">
+            <div class="avatar-wrap">
+              <div class="avatar-hex" style="width:100px;height:100px;font-size:48px">🎮</div>
+              <div class="vip-badge" style="font-size:10px;padding:3px 8px">VIP ELITE</div>
+            </div>
+            <div>
+              <div style="font-family:'Orbitron';font-size:24px;font-weight:900;color:#fff;text-shadow:var(--glow)">◈ N3XUS_PRO</div>
+              <div style="font-family:'Share Tech Mono';font-size:12px;color:var(--dim);margin-top:4px">UID: 521093847</div>
+              <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">
+                <div class="badge-chip gold">👑 HEROIC</div>
+                <div class="badge-chip cyan">💎 VIP ELITE</div>
+                <div class="badge-chip green">⚡ TOP 1%</div>
+                <div class="badge-chip purple">🔱 OG PLAYER</div>
+              </div>
+              <div style="margin-top:12px;display:grid;grid-template-columns:1fr 1fr;gap:8px">
+                <div style="font-size:12px"><span style="color:var(--dim);font-family:'Share Tech Mono'">Level: </span><span style="color:var(--cyan);font-weight:700">72</span></div>
+                <div style="font-size:12px"><span style="color:var(--dim);font-family:'Share Tech Mono'">Bergabung: </span><span style="font-weight:600">Jan 2020</span></div>
+                <div style="font-size:12px"><span style="color:var(--dim);font-family:'Share Tech Mono'">Guild: </span><span style="color:var(--yellow);font-weight:700">NEXUS ELITE</span></div>
+                <div style="font-size:12px"><span style="color:var(--dim);font-family:'Share Tech Mono'">Region: </span><span style="font-weight:600">🇮🇩 ID</span></div>
+              </div>
+            </div>
+          </div>
+          <div style="background:rgba(0,102,255,0.05);border:1px solid var(--border);border-radius:10px;padding:14px">
+            <div style="font-family:'Share Tech Mono';font-size:10px;color:var(--dim);letter-spacing:2px;margin-bottom:12px">STATISTIK MUSIM 38</div>
+            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px">
+              <div style="text-align:center"><div style="font-family:'Orbitron';font-size:22px;color:var(--cyan);font-weight:900">2,847</div><div style="font-size:10px;color:var(--dim);font-family:'Share Tech Mono'">TOTAL MATCH</div></div>
+              <div style="text-align:center"><div style="font-family:'Orbitron';font-size:22px;color:var(--green);font-weight:900">13,841</div><div style="font-size:10px;color:var(--dim);font-family:'Share Tech Mono'">TOTAL KILL</div></div>
+              <div style="text-align:center"><div style="font-family:'Orbitron';font-size:22px;color:var(--yellow);font-weight:900">1,198</div><div style="font-size:10px;color:var(--dim);font-family:'Share Tech Mono'">BOOYAH</div></div>
+              <div style="text-align:center"><div style="font-family:'Orbitron';font-size:22px;color:var(--pink);font-weight:900">4.87</div><div style="font-size:10px;color:var(--dim);font-family:'Share Tech Mono'">K/D RATIO</div></div>
+              <div style="text-align:center"><div style="font-family:'Orbitron';font-size:22px;color:var(--blue);font-weight:900">68.4%</div><div style="font-size:10px;color:var(--dim);font-family:'Share Tech Mono'">HEADSHOT</div></div>
+              <div style="text-align:center"><div style="font-family:'Orbitron';font-size:22px;color:#a855f7;font-weight:900">42.1%</div><div style="font-size:10px;color:var(--dim);font-family:'Share Tech Mono'">WIN RATE</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:14px">
+        <div class="card">
+          <div class="card-header"><div class="card-title"><span class="dot" style="background:var(--yellow);box-shadow:0 0 8px var(--yellow)"></span> RANK PROGRESS</div></div>
+          <div class="card-body">
+            <div class="rank-display">
+              <div class="rank-icon">👑</div>
+              <div class="rank-name">HEROIC III</div>
+              <div class="rank-pts">2,840 / 3,000 poin</div>
+            </div>
+            <div class="rank-bar-wrap">
+              <div class="rank-bar-label"><span>HEROIC III</span><span>160 pts lagi</span></div>
+              <div class="rank-bar"><div class="rank-bar-fill" style="width:72%"></div></div>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header"><div class="card-title"><span class="dot" style="background:var(--purple);box-shadow:0 0 8px var(--purple)"></span> SEASON COMPARISON</div></div>
+          <div class="card-body">
+            <div class="season-row">
+              <div class="season-tab active">S37</div>
+              <div class="season-tab">S36</div>
+              <div class="season-tab">S35</div>
+            </div>
+            <div class="compare-grid">
+              <div class="compare-item">
+                <div class="compare-label">HEADSHOT</div>
+                <div class="compare-vals"><span class="compare-old">61.2%</span><span class="compare-arrow">↑</span><span class="compare-new">68.4%</span></div>
+              </div>
+              <div class="compare-item">
+                <div class="compare-label">WIN RATE</div>
+                <div class="compare-vals"><span class="compare-old">38.9%</span><span class="compare-arrow">↑</span><span class="compare-new">42.1%</span></div>
+              </div>
+              <div class="compare-item">
+                <div class="compare-label">K/D RATIO</div>
+                <div class="compare-vals"><span class="compare-old">4.21</span><span class="compare-arrow">↑</span><span class="compare-new">4.87</span></div>
+              </div>
+              <div class="compare-item">
+                <div class="compare-label">AVG KILL</div>
+                <div class="compare-vals"><span class="compare-old">4.1</span><span class="compare-arrow">↑</span><span class="compare-new">5.6</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header"><div class="card-title"><span class="dot"></span> QR LOGIN</div></div>
+          <div class="card-body">
+            <div class="qr-box">
+              <div class="qr-placeholder">[ QR<br>CODE<br>LOGIN ]</div>
+              <div class="qr-info">
+                <div class="qr-title">Multi-Device Sync</div>
+                <div class="qr-desc">Scan QR ini untuk login<br>di perangkat lain.<br><br>Berlaku 10 menit.<br>Diperbarui otomatis.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div><!-- end profile -->
+
+  <!-- ===== ANALYTICS PAGE ===== -->
+  <div id="page-analytics" style="display:none">
+    <div class="stats-row" style="grid-template-columns:repeat(4,1fr)">
+      <div class="stat-card cyan"><div class="stat-label">AVG KILL/MATCH</div><div class="stat-value cyan">5.6</div><div class="stat-sub">↑ +0.4 vs S37</div></div>
+      <div class="stat-card yellow"><div class="stat-label">AVG DAMAGE</div><div class="stat-value yellow">1,240</div><div class="stat-sub">↑ Top 3%</div></div>
+      <div class="stat-card green"><div class="stat-label">SURVIVAL RATE</div><div class="stat-value green">84.3%</div><div class="stat-sub">↑ +1.2%</div></div>
+      <div class="stat-card pink"><div class="stat-label">LONGEST STREAK</div><div class="stat-value pink">12</div><div class="stat-sub">Personal Best</div></div>
+    </div>
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-header"><div class="card-title"><span class="dot"></span> GRAFIK HEADSHOT RATE (7 HARI)</div></div>
+        <div class="card-body">
+          <div class="chart-bars" style="height:120px">
+            <div class="bar-col"><div class="bar-fill" style="height:60%;background:linear-gradient(180deg,var(--yellow),rgba(255,215,0,0.2))"></div><div class="bar-label">62%</div></div>
+            <div class="bar-col"><div class="bar-fill" style="height:68%;background:linear-gradient(180deg,var(--yellow),rgba(255,215,0,0.2))"></div><div class="bar-label">65%</div></div>
+            <div class="bar-col"><div class="bar-fill" style="height:62%;background:linear-gradient(180deg,var(--yellow),rgba(255,215,0,0.2))"></div><div class="bar-label">63%</div></div>
+            <div class="bar-col"><div class="bar-fill" style="height:80%;background:linear-gradient(180deg,var(--orange),rgba(255,107,0,0.2))"></div><div class="bar-label">70%</div></div>
+            <div class="bar-col"><div class="bar-fill" style="height:72%;background:linear-gradient(180deg,var(--yellow),rgba(255,215,0,0.2))"></div><div class="bar-label">67%</div></div>
+            <div class="bar-col"><div class="bar-fill" style="height:90%;background:linear-gradient(180deg,var(--orange),rgba(255,107,0,0.2))"></div><div class="bar-label">71%</div></div>
+            <div class="bar-col"><div class="bar-fill" style="height:96%;background:linear-gradient(180deg,#ff4500,rgba(255,69,0,0.2))"></div><div class="bar-label">68%</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-title"><span class="dot" style="background:var(--blue);box-shadow:0 0 8px var(--blue)"></span> GRAFIK WIN RATE MINGGUAN</div></div>
+        <div class="card-body">
+          <div class="chart-bars" style="height:120px">
+            <div class="bar-col"><div class="bar-fill" style="height:38%;background:linear-gradient(180deg,var(--blue),rgba(0,102,255,0.2))"></div><div class="bar-label">38%</div></div>
+            <div class="bar-col"><div class="bar-fill" style="height:41%;background:linear-gradient(180deg,var(--blue),rgba(0,102,255,0.2))"></div><div class="bar-label">40%</div></div>
+            <div class="bar-col"><div class="bar-fill" style="height:36%;background:linear-gradient(180deg,var(--blue),rgba(0,102,255,0.2))"></div><div class="bar-label">37%</div></div>
+            <div class="bar-col"><div class="bar-fill" style="height:45%;background:linear-gradient(180deg,var(--cyan),rgba(0,245,255,0.2))"></div><div class="bar-label">43%</div></div>
+            <div class="bar-col"><div class="bar-fill" style="height:42%;background:linear-gradient(180deg,var(--blue),rgba(0,102,255,0.2))"></div><div class="bar-label">41%</div></div>
+            <div class="bar-col"><div class="bar-fill" style="height:47%;background:linear-gradient(180deg,var(--cyan),rgba(0,245,255,0.2))"></div><div class="bar-label">44%</div></div>
+            <div class="bar-col"><div class="bar-fill" style="height:44%;background:linear-gradient(180deg,var(--cyan),rgba(0,245,255,0.2))"></div><div class="bar-label">42%</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card" style="margin-bottom:16px">
+      <div class="card-header"><div class="card-title"><span class="dot" style="background:var(--pink);box-shadow:0 0 8px var(--pink)"></span> BATTLE REPORT — MATCH TERAKHIR</div><span class="live-tag">BARU</span></div>
+      <div class="card-body">
+        <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:14px;text-align:center">
+          <div><div style="font-size:10px;color:var(--dim);font-family:'Share Tech Mono';margin-bottom:6px">KILL</div><div style="font-family:'Orbitron';font-size:22px;color:var(--pink);font-weight:900">8</div></div>
+          <div><div style="font-size:10px;color:var(--dim);font-family:'Share Tech Mono';margin-bottom:6px">HEADSHOT</div><div style="font-family:'Orbitron';font-size:22px;color:var(--yellow);font-weight:900">6</div></div>
+          <div><div style="font-size:10px;color:var(--dim);font-family:'Share Tech Mono';margin-bottom:6px">DAMAGE</div><div style="font-family:'Orbitron';font-size:22px;color:var(--cyan);font-weight:900">1,847</div></div>
+          <div><div style="font-size:10px;color:var(--dim);font-family:'Share Tech Mono';margin-bottom:6px">SURVIVE</div><div style="font-family:'Orbitron';font-size:22px;color:var(--green);font-weight:900">18m</div></div>
+          <div><div style="font-size:10px;color:var(--dim);font-family:'Share Tech Mono';margin-bottom:6px">RANK</div><div style="font-family:'Orbitron';font-size:22px;color:var(--blue);font-weight:900">#2</div></div>
+          <div><div style="font-size:10px;color:var(--dim);font-family:'Share Tech Mono';margin-bottom:6px">RP GAIN</div><div style="font-family:'Orbitron';font-size:22px;color:#a855f7;font-weight:900">+43</div></div>
+        </div>
+      </div>
+    </div>
+  </div><!-- end analytics -->
+
+  <!-- ===== TOOLS PAGE ===== -->
+  <div id="page-tools" style="display:none">
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-header"><div class="card-title"><span class="dot"></span> GENERATOR NAMA FF</div></div>
+        <div class="card-body">
+          <div class="gen-output"><div class="gen-name" id="genName">◈ NEXUS_STRIKER ⚡</div></div>
+          <div style="margin-bottom:10px">
+            <select style="width:100%;background:rgba(4,13,26,0.8);border:1px solid var(--border);border-radius:8px;padding:8px 12px;color:var(--text);font-family:'Rajdhani';font-size:13px;outline:none;margin-bottom:8px">
+              <option>Style: Cyber Pro</option>
+              <option>Style: Shadow Ninja</option>
+              <option>Style: Neon Striker</option>
+              <option>Style: Ghost Sniper</option>
+            </select>
+          </div>
+          <button class="gen-btn" onclick="generateName()">⚡ GENERATE NAMA BARU</button>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-title"><span class="dot" style="background:var(--purple);box-shadow:0 0 8px var(--purple)"></span> GENERATOR NAMA GUILD</div></div>
+        <div class="card-body">
+          <div class="gen-output"><div class="gen-name" id="genGuild" style="color:#a855f7">⚔️ NEXUS ELITE ⚔️</div></div>
+          <div style="margin-bottom:10px">
+            <select style="width:100%;background:rgba(4,13,26,0.8);border:1px solid var(--border);border-radius:8px;padding:8px 12px;color:var(--text);font-family:'Rajdhani';font-size:13px;outline:none;margin-bottom:8px">
+              <option>Style: Elite Squad</option>
+              <option>Style: Shadow Force</option>
+              <option>Style: Cyber Legion</option>
+            </select>
+          </div>
+          <button class="gen-btn" style="background:linear-gradient(135deg,var(--purple),var(--pink))" onclick="generateGuild()">⚔️ GENERATE GUILD BARU</button>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-title"><span class="dot" style="background:var(--yellow);box-shadow:0 0 8px var(--yellow)"></span> KALKULATOR DIAMOND</div></div>
+        <div class="card-body">
+          <div class="calc-row"><div class="calc-label" style="font-family:'Share Tech Mono';font-size:11px;color:var(--dim);width:70px">Diamond</div><input class="calc-input" type="number" placeholder="Masukkan jumlah diamond..." id="diamondInput" oninput="calcDiamond()"></div>
+          <div class="calc-result">
+            <div class="calc-result-label">ESTIMASI HARGA (IDR)</div>
+            <div class="calc-result-val" id="diamondResult">Rp 0</div>
+          </div>
+          <div style="margin-top:10px;display:grid;grid-template-columns:repeat(3,1fr);gap:6px">
+            <button onclick="setDiamond(100)" style="padding:6px;background:rgba(0,102,255,0.1);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:11px;cursor:pointer;font-family:'Share Tech Mono'">100 💎</button>
+            <button onclick="setDiamond(500)" style="padding:6px;background:rgba(0,102,255,0.1);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:11px;cursor:pointer;font-family:'Share Tech Mono'">500 💎</button>
+            <button onclick="setDiamond(1000)" style="padding:6px;background:rgba(0,102,255,0.1);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:11px;cursor:pointer;font-family:'Share Tech Mono'">1000 💎</button>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-title"><span class="dot" style="background:var(--green);box-shadow:0 0 8px var(--green)"></span> KALKULATOR EXP LEVEL</div></div>
+        <div class="card-body">
+          <div class="calc-row"><div class="calc-label" style="font-family:'Share Tech Mono';font-size:11px;color:var(--dim);width:70px">Level Saat</div><input class="calc-input" type="number" placeholder="Level saat ini..." id="levelFrom" value="72" oninput="calcExp()"></div>
+          <div class="calc-row"><div class="calc-label" style="font-family:'Share Tech Mono';font-size:11px;color:var(--dim);width:70px">Level Target</div><input class="calc-input" type="number" placeholder="Level target..." id="levelTo" value="80" oninput="calcExp()"></div>
+          <div class="calc-result">
+            <div class="calc-result-label">EXP DIBUTUHKAN</div>
+            <div class="calc-result-val" id="expResult" style="color:var(--green)">240,000</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-header"><div class="card-title"><span class="dot" style="background:var(--pink);box-shadow:0 0 8px var(--pink)"></span> GENERATOR SIMBOL UNIK</div></div>
+      <div class="card-body">
+        <div style="display:flex;flex-wrap:wrap;gap:8px;padding:10px;background:rgba(4,13,26,0.6);border:1px solid var(--border);border-radius:8px;min-height:60px;margin-bottom:10px" id="symbolGrid"></div>
+        <button class="gen-btn" onclick="generateSymbols()" style="background:linear-gradient(135deg,var(--pink),var(--purple))">✨ GENERATE SIMBOL</button>
+      </div>
+    </div>
+  </div><!-- end tools -->
+
+  <!-- ===== LEADERBOARD PAGE ===== -->
+  <div id="page-leaderboard" style="display:none">
+    <div class="tabs">
+      <div class="tab active">🔥 Top Kill</div>
+      <div class="tab">🎯 Top Headshot</div>
+      <div class="tab">👑 Top Booyah</div>
+      <div class="tab">⚔️ Top Guild</div>
+    </div>
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-header"><div class="card-title"><span class="dot"></span> TOP 10 KILL — SERVER ID</div><span class="live-tag">LIVE</span></div>
+        <div class="card-body">
+          <div class="lb-item"><div class="lb-rank gold">1</div><div class="lb-avatar" style="background:rgba(255,215,0,0.15)">👑</div><div><div class="lb-name">◈ GHOST_STRIKER</div><div class="lb-bar" style="width:100%;background:linear-gradient(90deg,var(--yellow),var(--orange))"></div></div><div class="lb-val" style="color:var(--yellow)">21,847</div></div>
+          <div class="lb-item"><div class="lb-rank silver">2</div><div class="lb-avatar" style="background:rgba(192,192,192,0.15)">⚡</div><div><div class="lb-name">xPRO_APEX</div><div class="lb-bar" style="width:90%;background:linear-gradient(90deg,#c0c0c0,#888)"></div></div><div class="lb-val" style="color:#c0c0c0">19,241</div></div>
+          <div class="lb-item"><div class="lb-rank bronze">3</div><div class="lb-avatar" style="background:rgba(205,127,50,0.15)">🔥</div><div><div class="lb-name">DARK_SNIPER99</div><div class="lb-bar" style="width:82%;background:linear-gradient(90deg,#cd7f32,#a05a2c)"></div></div><div class="lb-val" style="color:#cd7f32">18,003</div></div>
+          <div class="lb-item"><div class="lb-rank normal">4</div><div class="lb-avatar" style="background:rgba(0,245,255,0.1)">💀</div><div><div class="lb-name">N3XUS_PRO</div><div class="lb-bar" style="width:75%;background:linear-gradient(90deg,var(--cyan),var(--blue))"></div></div><div class="lb-val">16,841</div></div>
+          <div class="lb-item"><div class="lb-rank normal">5</div><div class="lb-avatar" style="background:rgba(168,85,247,0.1)">🎯</div><div><div class="lb-name">SHADOW_WOLF</div><div class="lb-bar" style="width:70%;background:var(--purple)"></div></div><div class="lb-val">15,600</div></div>
+          <div class="lb-item"><div class="lb-rank normal">6</div><div class="lb-avatar">⚔️</div><div><div class="lb-name">BLAZE_HUNTER</div><div class="lb-bar" style="width:65%;background:var(--orange)"></div></div><div class="lb-val">14,320</div></div>
+          <div class="lb-item"><div class="lb-rank normal">7</div><div class="lb-avatar">🌀</div><div><div class="lb-name">STORM_RIDER</div><div class="lb-bar" style="width:60%;background:var(--blue)"></div></div><div class="lb-val">13,147</div></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-title"><span class="dot" style="background:var(--purple);box-shadow:0 0 8px var(--purple)"></span> TOP GUILD AKTIF</div></div>
+        <div class="card-body">
+          <div class="lb-item"><div class="lb-rank gold">1</div><div class="lb-avatar" style="background:rgba(255,215,0,0.15)">⚔️</div><div><div class="lb-name">NEXUS ELITE</div><div class="lb-bar" style="width:100%;background:linear-gradient(90deg,var(--yellow),var(--orange))"></div></div><div class="lb-val" style="color:var(--yellow)">9,847</div></div>
+          <div class="lb-item"><div class="lb-rank silver">2</div><div class="lb-avatar" style="background:rgba(192,192,192,0.15)">🌀</div><div><div class="lb-name">CYBER FORCE</div><div class="lb-bar" style="width:88%;background:#c0c0c0"></div></div><div class="lb-val" style="color:#c0c0c0">8,721</div></div>
+          <div class="lb-item"><div class="lb-rank bronze">3</div><div class="lb-avatar" style="background:rgba(205,127,50,0.15)">🔥</div><div><div class="lb-name">SHADOW CLAN</div><div class="lb-bar" style="width:76%;background:#cd7f32"></div></div><div class="lb-val" style="color:#cd7f32">7,503</div></div>
+          <div class="lb-item"><div class="lb-rank normal">4</div><div class="lb-avatar">💎</div><div><div class="lb-name">DIAMOND GUILD</div><div class="lb-bar" style="width:65%;background:var(--cyan)"></div></div><div class="lb-val">6,240</div></div>
+          <div class="lb-item"><div class="lb-rank normal">5</div><div class="lb-avatar">⚡</div><div><div class="lb-name">THUNDER SQUAD</div><div class="lb-bar" style="width:58%;background:var(--blue)"></div></div><div class="lb-val">5,890</div></div>
+        </div>
+      </div>
+    </div>
+  </div><!-- end leaderboard -->
+
+  <!-- ===== COMMUNITY PAGE ===== -->
+  <div id="page-community" style="display:none">
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-header"><div class="card-title"><span class="dot" style="background:var(--green);box-shadow:0 0 8px var(--green)"></span> GLOBAL CHAT</div><span class="live-tag">LIVE</span></div>
+        <div class="card-body">
+          <div class="chat-msgs" id="globalChat">
+            <div class="chat-msg"><div class="chat-avatar-sm" style="background:rgba(255,215,0,0.2)">👑</div><div class="chat-bubble"><div class="chat-user" style="color:var(--yellow)">GHOST_STRIKER</div><div class="chat-text">gg ez match tadi 🔥</div><div class="chat-time">just now</div></div></div>
+            <div class="chat-msg"><div class="chat-avatar-sm" style="background:rgba(0,245,255,0.1)">⚡</div><div class="chat-bubble"><div class="chat-user" style="color:var(--cyan)">N3XUS_PRO</div><div class="chat-text">siap bosku! mau squad lagi?</div><div class="chat-time">1m ago</div></div></div>
+            <div class="chat-msg"><div class="chat-avatar-sm" style="background:rgba(168,85,247,0.15)">🌀</div><div class="chat-bubble"><div class="chat-user" style="color:#a855f7">SHADOW_WOLF</div><div class="chat-text">event baru lumayan diamond rewads nya</div><div class="chat-time">2m ago</div></div></div>
+            <div class="chat-msg"><div class="chat-avatar-sm" style="background:rgba(255,107,0,0.15)">🔥</div><div class="chat-bubble"><div class="chat-user" style="color:var(--orange)">BLAZE_HUNTER</div><div class="chat-text">ada yg mau rank push bareng?</div><div class="chat-time">3m ago</div></div></div>
+          </div>
+          <div class="chat-input-row">
+            <input class="chat-input" placeholder="Ketik pesan..." id="chatInput" onkeydown="if(event.key==='Enter') sendChat()">
+            <button class="chat-send" onclick="sendChat()">KIRIM</button>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-title"><span class="dot" style="background:var(--yellow);box-shadow:0 0 8px var(--yellow)"></span> GUILD CHAT — NEXUS ELITE</div></div>
+        <div class="card-body">
+          <div class="chat-msgs">
+            <div class="chat-msg"><div class="chat-avatar-sm" style="background:rgba(255,215,0,0.2)">⚔️</div><div class="chat-bubble"><div class="chat-user" style="color:var(--yellow)">Guild Master</div><div class="chat-text">tournament besok jam 8 malam, semua siap?</div><div class="chat-time">5m ago</div></div></div>
+            <div class="chat-msg"><div class="chat-avatar-sm" style="background:rgba(0,245,255,0.1)">⚡</div><div class="chat-bubble"><div class="chat-user" style="color:var(--cyan)">N3XUS_PRO</div><div class="chat-text">siap boss! 💪</div><div class="chat-time">4m ago</div></div></div>
+            <div class="chat-msg"><div class="chat-avatar-sm" style="background:rgba(0,255,136,0.1)">🎯</div><div class="chat-bubble"><div class="chat-user" style="color:var(--green)">APEX_RANGER</div><div class="chat-text">on boss, slot masih ada?</div><div class="chat-time">3m ago</div></div></div>
+          </div>
+          <div class="chat-input-row">
+            <input class="chat-input" placeholder="Guild message...">
+            <button class="chat-send" style="background:linear-gradient(135deg,var(--yellow),var(--orange))">KIRIM</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-header"><div class="card-title"><span class="dot" style="background:var(--pink);box-shadow:0 0 8px var(--pink)"></span> PENGUMUMAN EVENT</div></div>
+      <div class="card-body">
+        <div style="display:flex;flex-direction:column;gap:10px">
+          <div style="background:rgba(255,107,0,0.05);border:1px solid rgba(255,107,0,0.2);border-radius:8px;padding:12px;display:flex;align-items:center;gap:12px"><span style="font-size:22px">🔥</span><div><div style="font-size:13px;font-weight:700">Cyber Hunt Season 2 — DIMULAI!</div><div style="font-size:11px;color:var(--dim);font-family:'Share Tech Mono'">Hadiah: 5,000 Diamond | 72 jam tersisa</div></div><span class="live-tag" style="margin-left:auto">BARU</span></div>
+          <div style="background:rgba(0,245,255,0.05);border:1px solid rgba(0,245,255,0.15);border-radius:8px;padding:12px;display:flex;align-items:center;gap:12px"><span style="font-size:22px">🏆</span><div><div style="font-size:13px;font-weight:700">Tournament Guild — Pendaftaran Dibuka</div><div style="font-size:11px;color:var(--dim);font-family:'Share Tech Mono'">Hadiah: Bundle Eksklusif | 5 hari lagi</div></div></div>
+          <div style="background:rgba(255,215,0,0.05);border:1px solid rgba(255,215,0,0.15);border-radius:8px;padding:12px;display:flex;align-items:center;gap:12px"><span style="font-size:22px">💎</span><div><div style="font-size:13px;font-weight:700">Double EXP Weekend</div><div style="font-size:11px;color:var(--dim);font-family:'Share Tech Mono'">Sabtu-Minggu semua match +100% EXP</div></div></div>
+        </div>
+      </div>
+    </div>
+  </div><!-- end community -->
+
+  <!-- ===== EVENTS PAGE ===== -->
+  <div id="page-events" style="display:none">
+    <div class="card" style="margin-bottom:16px">
+      <div class="card-header"><div class="card-title"><span class="dot" style="background:var(--orange);box-shadow:0 0 8px var(--orange)"></span> EVENT CENTER</div><span class="live-tag">4 AKTIF</span></div>
+      <div class="card-body">
+        <div class="event-grid">
+          <div class="event-card fire"><div class="event-title">🔥 CYBER HUNT S2</div><div class="event-desc">Kumpulkan token, tukarkan hadiah</div><div class="event-timer fire">⏱ 71:24:08 TERSISA</div></div>
+          <div class="event-card cyber"><div class="event-title">⚡ NEXUS TOURNAMENT</div><div class="event-desc">Hadiah: Bundle Rare + 3,000 Diamond</div><div class="event-timer cyber">⏱ 4 HARI 12 JAM</div></div>
+          <div class="event-card gold"><div class="event-title">👑 RANK CLIMB BONUS</div><div class="event-desc">Naik rank = bonus diamond ekstra</div><div class="event-timer gold">⏱ 2 HARI TERSISA</div></div>
+          <div class="event-card purple"><div class="event-title">💎 DIAMOND FESTIVAL</div><div class="event-desc">Top-up double diamonds semua paket</div><div class="event-timer purple">⏱ 6 JAM TERSISA</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-header"><div class="card-title"><span class="dot"></span> REWARD CENTER</div></div>
+      <div class="card-body">
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px">
+          <div style="background:rgba(0,245,255,0.05);border:1px solid var(--border);border-radius:10px;padding:14px;text-align:center;cursor:pointer;transition:all 0.2s" onmouseover="this.style.borderColor='var(--cyan)'" onmouseout="this.style.borderColor='var(--border)'"><div style="font-size:28px;margin-bottom:8px">💎</div><div style="font-size:12px;font-weight:700">100 Diamond</div><div style="font-size:10px;color:var(--green);font-family:'Share Tech Mono';margin-top:4px">✅ BISA KLAIM</div></div>
+          <div style="background:rgba(255,215,0,0.05);border:1px solid rgba(255,215,0,0.2);border-radius:10px;padding:14px;text-align:center;cursor:pointer"><div style="font-size:28px;margin-bottom:8px">👑</div><div style="font-size:12px;font-weight:700">Bundle Royal</div><div style="font-size:10px;color:var(--yellow);font-family:'Share Tech Mono';margin-top:4px">800 TOKEN</div></div>
+          <div style="background:rgba(168,85,247,0.05);border:1px solid rgba(168,85,247,0.2);border-radius:10px;padding:14px;text-align:center;cursor:pointer"><div style="font-size:28px;margin-bottom:8px">🎯</div><div style="font-size:12px;font-weight:700">Skin Senjata</div><div style="font-size:10px;color:#a855f7;font-family:'Share Tech Mono';margin-top:4px">1,200 TOKEN</div></div>
+          <div style="background:rgba(255,107,0,0.05);border:1px solid rgba(255,107,0,0.2);border-radius:10px;padding:14px;text-align:center;cursor:pointer"><div style="font-size:28px;margin-bottom:8px">🔥</div><div style="font-size:12px;font-weight:700">Emote Langka</div><div style="font-size:10px;color:var(--orange);font-family:'Share Tech Mono';margin-top:4px">2,000 TOKEN</div></div>
+        </div>
+      </div>
+    </div>
+  </div><!-- end events -->
+
+  <!-- ===== ACHIEVEMENTS PAGE ===== -->
+  <div id="page-achievements" style="display:none">
+    <div class="card">
+      <div class="card-header"><div class="card-title"><span class="dot" style="background:var(--yellow);box-shadow:0 0 8px var(--yellow)"></span> ACHIEVEMENT CENTER</div><span style="font-size:11px;color:var(--dim);font-family:'Share Tech Mono'">24 / 48 UNLOCKED</span></div>
+      <div class="card-body">
+        <div class="achievement-grid">
+          <div class="ach-item"><div class="ach-icon">🎯</div><div class="ach-name">HEADSHOT KING</div></div>
+          <div class="ach-item"><div class="ach-icon">👑</div><div class="ach-name">HEROIC RANK</div></div>
+          <div class="ach-item"><div class="ach-icon">🔥</div><div class="ach-name">10 KILL MATCH</div></div>
+          <div class="ach-item"><div class="ach-icon">💀</div><div class="ach-name">10K KILLS</div></div>
+          <div class="ach-item"><div class="ach-icon">⚡</div><div class="ach-name">SPEED DEMON</div></div>
+          <div class="ach-item"><div class="ach-icon">🏆</div><div class="ach-name">1000 BOOYAH</div></div>
+          <div class="ach-item ach-locked"><div class="ach-icon">💎</div><div class="ach-name">GRANDMASTER</div></div>
+          <div class="ach-item ach-locked"><div class="ach-icon">🌟</div><div class="ach-name">20K KILLS</div></div>
+          <div class="ach-item ach-locked"><div class="ach-icon">👁️</div><div class="ach-name">EAGLE EYE</div></div>
+        </div>
+        <div style="margin-top:14px;background:rgba(4,13,26,0.6);border:1px solid var(--border);border-radius:8px;padding:12px">
+          <div style="display:flex;justify-content:space-between;font-size:11px;font-family:'Share Tech Mono';color:var(--dim);margin-bottom:8px"><span>PROGRESS KESELURUHAN</span><span style="color:var(--cyan)">50%</span></div>
+          <div style="height:8px;background:var(--border);border-radius:4px;overflow:hidden"><div style="height:100%;width:50%;background:linear-gradient(90deg,var(--cyan),var(--blue));border-radius:4px"></div></div>
+        </div>
+      </div>
+    </div>
+  </div><!-- end achievements -->
+
+  <!-- ===== VIP PAGE ===== -->
+  <div id="page-vip" style="display:none">
+    <div class="grid-2">
+      <div class="vip-card">
+        <div class="vip-title">💎 STATUS VIP ELITE</div>
+        <div style="margin-top:10px;font-family:'Orbitron';font-size:32px;color:var(--yellow);font-weight:900;text-shadow:0 0 20px rgba(255,215,0,0.5)">AKTIF</div>
+        <div style="font-size:11px;color:var(--dim);font-family:'Share Tech Mono';margin-top:4px">Berlaku hingga: 31 Desember 2025</div>
+        <div class="vip-perks">
+          <div class="vip-perk"><span class="vip-perk-icon">✅</span><span style="font-size:12px">Badge VIP Eksklusif</span></div>
+          <div class="vip-perk"><span class="vip-perk-icon">✅</span><span style="font-size:12px">Tema & Border Eksklusif</span></div>
+          <div class="vip-perk"><span class="vip-perk-icon">✅</span><span style="font-size:12px">Avatar Animasi Premium</span></div>
+          <div class="vip-perk"><span class="vip-perk-icon">✅</span><span style="font-size:12px">Statistik Detail Lengkap</span></div>
+          <div class="vip-perk"><span class="vip-perk-icon">✅</span><span style="font-size:12px">Prioritas Support 24/7</span></div>
+          <div class="vip-perk"><span class="vip-perk-icon">✅</span><span style="font-size:12px">Akses Fitur Beta</span></div>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:14px">
+        <div class="card">
+          <div class="card-header"><div class="card-title"><span class="dot" style="background:var(--yellow);box-shadow:0 0 8px var(--yellow)"></span> STATISTIK DETAIL VIP</div></div>
+          <div class="card-body">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+              <div style="text-align:center;padding:10px;background:rgba(255,215,0,0.05);border:1px solid rgba(255,215,0,0.2);border-radius:8px"><div style="font-family:'Orbitron';font-size:20px;color:var(--yellow);font-weight:900">98.4%</div><div style="font-size:10px;color:var(--dim);font-family:'Share Tech Mono'">ACC RATE</div></div>
+              <div style="text-align:center;padding:10px;background:rgba(0,245,255,0.05);border:1px solid rgba(0,245,255,0.15);border-radius:8px"><div style="font-family:'Orbitron';font-size:20px;color:var(--cyan);font-weight:900">1,847</div><div style="font-size:10px;color:var(--dim);font-family:'Share Tech Mono'">AVG DMG</div></div>
+              <div style="text-align:center;padding:10px;background:rgba(0,255,136,0.05);border:1px solid rgba(0,255,136,0.15);border-radius:8px"><div style="font-family:'Orbitron';font-size:20px;color:var(--green);font-weight:900">18m</div><div style="font-size:10px;color:var(--dim);font-family:'Share Tech Mono'">AVG SURVIVE</div></div>
+              <div style="text-align:center;padding:10px;background:rgba(168,85,247,0.05);border:1px solid rgba(168,85,247,0.2);border-radius:8px"><div style="font-family:'Orbitron';font-size:20px;color:#a855f7;font-weight:900">TOP 1%</div><div style="font-size:10px;color:var(--dim);font-family:'Share Tech Mono'">GLOBAL RANK</div></div>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header"><div class="card-title"><span class="dot" style="background:var(--pink);box-shadow:0 0 8px var(--pink)"></span> DIAMOND TRACKER</div></div>
+          <div class="card-body">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+              <div><div style="font-size:11px;color:var(--dim);font-family:'Share Tech Mono'">SALDO DIAMOND</div><div style="font-family:'Orbitron';font-size:24px;color:var(--cyan);font-weight:900">4,250 💎</div></div>
+              <div style="text-align:right"><div style="font-size:11px;color:var(--dim);font-family:'Share Tech Mono'">TOTAL SPENT</div><div style="font-family:'Orbitron';font-size:24px;color:var(--pink);font-weight:900">28,400 💎</div></div>
+            </div>
+            <div style="height:6px;background:var(--border);border-radius:3px;overflow:hidden"><div style="height:100%;width:60%;background:linear-gradient(90deg,var(--cyan),var(--blue));border-radius:3px"></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div><!-- end vip -->
+
+  <!-- ===== CUSTOMIZE PAGE ===== -->
+  <div id="page-customize" style="display:none">
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-header"><div class="card-title"><span class="dot"></span> PILIH TEMA</div></div>
+        <div class="card-body">
+          <div class="theme-row">
+            <div class="theme-dot cyan active" title="Cyber Cyan" onclick="applyTheme('cyan',this)">●</div>
+            <div class="theme-dot purple" title="Neon Purple" onclick="applyTheme('purple',this)">●</div>
+            <div class="theme-dot green" title="Matrix Green" onclick="applyTheme('green',this)">●</div>
+            <div class="theme-dot fire" title="Fire Red" onclick="applyTheme('fire',this)">●</div>
+            <div class="theme-dot gold" title="Gold VIP" onclick="applyTheme('gold',this)">●</div>
+          </div>
+          <div style="margin-top:16px;font-size:11px;color:var(--dim);font-family:'Share Tech Mono'">TEMA AKTIF: <span style="color:var(--cyan)" id="activeThemeName">CYBER CYAN</span></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-title"><span class="dot" style="background:var(--purple);box-shadow:0 0 8px var(--purple)"></span> EFEK PARTIKEL</div></div>
+        <div class="card-body">
+          <div style="display:flex;flex-direction:column;gap:10px">
+            <div style="display:flex;justify-content:space-between;align-items:center"><span style="font-size:13px">Partikel Aktif</span><div onclick="toggleParticle(this)" style="width:44px;height:24px;background:var(--cyan);border-radius:12px;cursor:pointer;position:relative;transition:all 0.3s"><div style="width:20px;height:20px;background:#fff;border-radius:50%;position:absolute;right:2px;top:2px;transition:all 0.3s"></div></div></div>
+            <div style="display:flex;justify-content:space-between;align-items:center"><span style="font-size:13px">Matrix Rain</span><div onclick="toggleEffect(this)" style="width:44px;height:24px;background:var(--border);border-radius:12px;cursor:pointer;position:relative;transition:all 0.3s"><div style="width:20px;height:20px;background:#888;border-radius:50%;position:absolute;left:2px;top:2px;transition:all 0.3s"></div></div></div>
+            <div style="display:flex;justify-content:space-between;align-items:center"><span style="font-size:13px">Efek Glow Neon</span><div onclick="toggleEffect(this)" style="width:44px;height:24px;background:var(--cyan);border-radius:12px;cursor:pointer;position:relative;transition:all 0.3s"><div style="width:20px;height:20px;background:#fff;border-radius:50%;position:absolute;right:2px;top:2px;transition:all 0.3s"></div></div></div>
+            <div style="display:flex;justify-content:space-between;align-items:center"><span style="font-size:13px">Animasi Hover 3D</span><div onclick="toggleEffect(this)" style="width:44px;height:24px;background:var(--cyan);border-radius:12px;cursor:pointer;position:relative;transition:all 0.3s"><div style="width:20px;height:20px;background:#fff;border-radius:50%;position:absolute;right:2px;top:2px;transition:all 0.3s"></div></div></div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-title"><span class="dot" style="background:var(--green);box-shadow:0 0 8px var(--green)"></span> WALLPAPER DASHBOARD</div></div>
+        <div class="card-body">
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px">
+            <div style="aspect-ratio:16/9;background:linear-gradient(135deg,#020810,#0a1628);border:2px solid var(--cyan);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:10px;font-family:'Share Tech Mono';color:var(--cyan);cursor:pointer">CYBER</div>
+            <div style="aspect-ratio:16/9;background:linear-gradient(135deg,#0a0015,#1a0030);border:1px solid var(--border);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:10px;font-family:'Share Tech Mono';color:#a855f7;cursor:pointer">GALAXY</div>
+            <div style="aspect-ratio:16/9;background:linear-gradient(135deg,#0f0800,#2a1500);border:1px solid var(--border);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:10px;font-family:'Share Tech Mono';color:var(--orange);cursor:pointer">FIRE</div>
+            <div style="aspect-ratio:16/9;background:linear-gradient(135deg,#001508,#002a10);border:1px solid var(--border);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:10px;font-family:'Share Tech Mono';color:var(--green);cursor:pointer">MATRIX</div>
+            <div style="aspect-ratio:16/9;background:linear-gradient(135deg,#0f0a00,#2a2000);border:1px solid var(--border);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:10px;font-family:'Share Tech Mono';color:var(--yellow);cursor:pointer">GOLD</div>
+            <div style="aspect-ratio:16/9;background:linear-gradient(135deg,#030a14,#050f1e);border:1px solid var(--border);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:10px;font-family:'Share Tech Mono';color:var(--blue);cursor:pointer">OCEAN</div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-title"><span class="dot" style="background:var(--orange);box-shadow:0 0 8px var(--orange)"></span> PREFERENSI TAMPILAN</div></div>
+        <div class="card-body">
+          <div style="display:flex;flex-direction:column;gap:10px">
+            <div><div style="font-size:11px;color:var(--dim);font-family:'Share Tech Mono';margin-bottom:5px">UKURAN FONT</div><input type="range" min="12" max="18" value="14" style="width:100%;accent-color:var(--cyan)"></div>
+            <div><div style="font-size:11px;color:var(--dim);font-family:'Share Tech Mono';margin-bottom:5px">KECEPATAN ANIMASI</div><input type="range" min="1" max="5" value="3" style="width:100%;accent-color:var(--cyan)"></div>
+            <div><div style="font-size:11px;color:var(--dim);font-family:'Share Tech Mono';margin-bottom:5px">INTENSITAS GLOW</div><input type="range" min="1" max="5" value="4" style="width:100%;accent-color:var(--cyan)"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div><!-- end customize -->
+
+  <!-- ===== SYSTEM PAGE ===== -->
+  <div id="page-system" style="display:none">
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-header"><div class="card-title"><span class="dot" style="background:var(--pink);box-shadow:0 0 8px var(--pink)"></span> NOTIFIKASI</div><span style="font-size:11px;background:var(--pink);color:#fff;padding:2px 8px;border-radius:10px;font-family:'Share Tech Mono'">5 BARU</span></div>
+        <div class="card-body">
+          <div style="display:flex;flex-direction:column;gap:8px">
+            <div style="background:rgba(255,0,110,0.05);border:1px solid rgba(255,0,110,0.2);border-radius:8px;padding:10px;display:flex;gap:10px;align-items:flex-start"><span style="font-size:18px">🔥</span><div><div style="font-size:12px;font-weight:700">Event Cyber Hunt dimulai!</div><div style="font-size:11px;color:var(--dim);font-family:'Share Tech Mono'">2 menit lalu</div></div></div>
+            <div style="background:rgba(255,215,0,0.05);border:1px solid rgba(255,215,0,0.15);border-radius:8px;padding:10px;display:flex;gap:10px;align-items:flex-start"><span style="font-size:18px">👑</span><div><div style="font-size:12px;font-weight:700">Kamu naik ke Heroic III!</div><div style="font-size:11px;color:var(--dim);font-family:'Share Tech Mono'">1 jam lalu</div></div></div>
+            <div style="background:rgba(0,255,136,0.05);border:1px solid rgba(0,255,136,0.15);border-radius:8px;padding:10px;display:flex;gap:10px;align-items:flex-start"><span style="font-size:18px">👥</span><div><div style="font-size:12px;font-weight:700">xPRO_Sniper menambahkan kamu</div><div style="font-size:11px;color:var(--dim);font-family:'Share Tech Mono'">2 jam lalu</div></div></div>
+            <div style="background:rgba(0,102,255,0.05);border:1px solid rgba(0,102,255,0.15);border-radius:8px;padding:10px;display:flex;gap:10px;align-items:flex-start"><span style="font-size:18px">💎</span><div><div style="font-size:12px;font-weight:700">Reward harian tersedia — klaim sekarang</div><div style="font-size:11px;color:var(--dim);font-family:'Share Tech Mono'">3 jam lalu</div></div></div>
+            <div style="background:rgba(168,85,247,0.05);border:1px solid rgba(168,85,247,0.15);border-radius:8px;padding:10px;display:flex;gap:10px;align-items:flex-start"><span style="font-size:18px">🏆</span><div><div style="font-size:12px;font-weight:700">Tournament Guild dibuka — daftar sekarang!</div><div style="font-size:11px;color:var(--dim);font-family:'Share Tech Mono'">5 jam lalu</div></div></div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-title"><span class="dot"></span> RIWAYAT LOGIN</div></div>
+        <div class="card-body scroll-section">
+          <div style="display:flex;flex-direction:column;gap:8px">
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:8px;background:rgba(0,255,136,0.05);border:1px solid rgba(0,255,136,0.15);border-radius:6px"><div><div style="font-size:12px;font-weight:600">✅ Login Berhasil</div><div style="font-size:10px;color:var(--dim);font-family:'Share Tech Mono'">📍 Jakarta, ID — Chrome/Android</div></div><div style="font-size:10px;color:var(--dim);font-family:'Share Tech Mono'">Baru saja</div></div>
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:8px;background:rgba(4,13,26,0.5);border:1px solid var(--border);border-radius:6px"><div><div style="font-size:12px;font-weight:600">✅ Login Berhasil</div><div style="font-size:10px;color:var(--dim);font-family:'Share Tech Mono'">📍 Jakarta, ID — Chrome/Android</div></div><div style="font-size:10px;color:var(--dim);font-family:'Share Tech Mono'">1 hari lalu</div></div>
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:8px;background:rgba(4,13,26,0.5);border:1px solid var(--border);border-radius:6px"><div><div style="font-size:12px;font-weight:600">✅ Login Berhasil</div><div style="font-size:10px;color:var(--dim);font-family:'Share Tech Mono'">📍 Bandung, ID — App</div></div><div style="font-size:10px;color:var(--dim);font-family:'Share Tech Mono'">2 hari lalu</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-title"><span class="dot" style="background:var(--blue);box-shadow:0 0 8px var(--blue)"></span> BACKUP & SINKRONISASI</div></div>
+        <div class="card-body">
+          <div style="display:flex;flex-direction:column;gap:10px">
+            <div style="background:rgba(0,255,136,0.05);border:1px solid rgba(0,255,136,0.2);border-radius:8px;padding:12px;display:flex;justify-content:space-between;align-items:center"><div><div 
